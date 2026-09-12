@@ -1,0 +1,14 @@
+# Build artifacts
+boottrs.bin
+*.lst
+*.symbols
+*.hex
+*.bin
+
+# Downloaded upstream disk/system images & archives
+trsos.dat
+*.zip
+*.dsk
+
+# OS metadata
+.DS_Store

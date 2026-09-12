@@ -1,0 +1,54 @@
+MIT License
+
+Copyright (c) 2026 Richard Lucente
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+--------------------------------------------------------------------------------
+Third-Party Credits & Attribution
+--------------------------------------------------------------------------------
+
+- TRS-OS:
+  Ported and adapted for the Zilog eZ80 processor by Daniel Paul Martin.
+  Upstream Website: https://danielpaulmartin.com
+
+- TRSDOS 6.3.1 / LS-DOS 6.3:
+  Originally developed by Logical Systems, Inc. and Misosys (Roy Soltoff, Dick Miller).
+  Released into the public domain by Roy Soltoff via Tim Mann's Misosys archive.
+  Website: https://www.tim-mann.org/misosys.html
+
+- Agon Light Hardware Platform:
+  Open-source 8-bit retrocomputer designed by Bernardo Kastrup (The Byte Attic)
+  and manufactured by Olimex Ltd.
+  Websites: https://www.thebyteattic.com/p/agon.html, https://github.com/OLIMEX/AgonLight2
+
+- Agon Platform Quark MOS & VDP:
+  Operating system and video display processor firmware developed by Dean Belfield
+  and the Agon Platform community.
+  Documentation: https://agonplatform.github.io/agon-docs/
+  Repositories: https://github.com/AgonPlatform
+
+- ez80asm:
+  The canonical eZ80 assembler for the Agon platform developed by Jeroen Venema
+  and the Agon Platform community.
+  Repository: https://github.com/AgonPlatform/agon-ez80asm
+
+- fab-agon-emulator:
+  Agon Light software emulator developed by Tom Nairn.
+  Repository: https://github.com/tomm/fab-agon-emulator
