@@ -1,0 +1,3 @@
+LOAD trsos.dat &40000
+LOAD boottrs.bin &B8000
+JMP &B8000
