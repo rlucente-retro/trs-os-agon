@@ -8,7 +8,7 @@ This repository provides the loader, system image, and instructions for running 
 1. [Overview & Architecture](#overview--architecture)
 2. [Does it Run on Top of MOS and VDP?](#does-it-run-on-top-of-mos-and-vdp)
 3. [The Technical Challenge & The Loader Solution](#the-technical-challenge--the-loader-solution)
-4. [Prerequisites & Repository Contents](#prerequisites--repository-contents)
+4. [Prerequisites, File Origins & Upstream Source](#prerequisites-file-origins--upstream-source)
 5. [Running on Real Hardware (MicroSD Setup)](#running-on-real-hardware-microsd-setup)
 6. [Running in an Agon Emulator](#running-in-an-agon-emulator)
 7. [Building the Loader (`boottrs.bin`)](#building-the-loader-boottrsbin)
@@ -87,20 +87,44 @@ Booting TRS-OS from MOS requires addressing several hardware constraints of the 
 
 ---
 
-## Prerequisites & Repository Contents
+## Prerequisites, File Origins & Upstream Source
 
 ### Requirements
 - **Hardware**: An Agon Light computer (e.g., Olimex Agon Light 2, original Agon Light, Agon Electron, Console8) with a microSD card, a VGA monitor, and a PS/2 (or USB) keyboard.
 - **Software/Emulation**: Any standard Agon emulator (e.g., `fab-agon-emulator`, `Agon-Light-Emulator`) running on macOS, Linux, or Windows.
 
-### Repository Files
-| File | Description |
-|---|---|
-| `trsos.dat` | Complete 480 KB binary (64 KB TRS-OS system + 416 KB pre-formatted Volume 0 RAM disk). |
-| `boottrs.bin` | Compiled 154-byte Agon MOS loader and memory remap stub. |
-| `autoexec.txt` | MOS auto-execution script to load and launch TRS-OS on power-up. |
-| `build_loader.py` | Standalone Python 3 script to assemble and regenerate `boottrs.bin`. |
-| `README.md` | This reference documentation. |
+### Repository Files & Origins
+
+| File | Type | Origin & Source Information |
+|---|---|---|
+| `trsos.dat` | Binary (480 KB) | **Externally Sourced** from Daniel Paul Martin. Distributed as `TRS-OS_Squirrel.bin` inside [TRS-NET.zip](https://danielpaulmartin.com/sitepad-data/uploads/TRS-NET.zip). Contains the 64 KB core OS (`SYS0`–`SYS13`) + 416 KB RAM disk (Volume 0). |
+| `boottrs.bin` | Binary (154 B) | **Generated locally** by [`build_loader.py`](build_loader.py). eZ80 trampoline and memory remap stub executed by MOS at `&B8000`. |
+| `build_loader.py` | Python 3 Script | **Authored for this repository** ([`build_loader.py`](build_loader.py)). Assembles raw machine code bytes to generate `boottrs.bin` without requiring external toolchains. |
+| `autoexec.txt` | Text Script | **Authored for this repository**. MOS batch script to automatically load and execute TRS-OS on power-up. |
+| `README.md` | Markdown | **Authored for this repository**. Architectural documentation, setup guides, and technical references. |
+
+### Upstream Source Code & External Downloads
+
+The core operating system and utilities running in this project originate from Daniel Paul Martin's port of TRSDOS / LS-DOS to the Zilog eZ80:
+
+- **Upstream Downloads & Homepage**: [Daniel Paul Martin's Downloads Page](https://danielpaulmartin.com/home/my-downloads/)
+- **TRS-OS Core & RAM Disk Image (`TRS-OS_Squirrel.bin` / `trsos.dat`)**:
+  - Download: [TRS-NET.zip](https://danielpaulmartin.com/sitepad-data/uploads/TRS-NET.zip)
+  - Also contains: Host Python networking server `TRS-NET.py`, printer test output, and pre-built virtual disk volumes (`sys631.dsk`, `bldtools.dsk`, `sys12M.dsk`, `sys180k.dsk`, `sys720k.dsk`).
+- **Complete Upstream Source Code Package**:
+  - Download: [TRSDOS 7 build package (`TRSDOS_7.zip`)](https://danielpaulmartin.com/sitepad-data/uploads/TRSDOS_7.zip)
+  - Contents:
+    - `SYS0_IPL/`: Full eZ80 assembly source files (`IPL_Code.s`, `ipl-BIOS.s`, `ipl-DOS.S`, `ipl-eZ80_CPU.S`, `ipl-POST.s`, `ipl-RTC.s`, `ipl-SLICE.s`, `screens/*.s`, etc.).
+    - `SYSRES/`: System resident source modules.
+    - `TRSDOS.s`: Master assembly driver file.
+    - `TRSDOS.zdsproj` & `TRSDOS_Debug.mak`: Zilog Developer Studio II (ZDS II) project files and build makefiles.
+    - `TRSDOS.pdf` & `TRSDOS7_expanded_macros.pdf`: Complete annotated assembly listings and macro cross-references.
+- **Supporting Equates & Assets**:
+  - [eZ80F91 & eZ80F92 CPU Equates (`eZ80_equates.zip`)](https://danielpaulmartin.com/sitepad-data/uploads/eZ80_equates.zip)
+  - [ASCII Control Equates (`equates-ASCII.zip`)](https://danielpaulmartin.com/sitepad-data/uploads/equates-ASCII.zip)
+  - [Terminal Fonts for TRSDOS (`AnotherMansTreasureM4A80C-fixed-width.zip`)](https://danielpaulmartin.com/sitepad-data/uploads/AnotherMansTreasureM4A80C-fixed-width.zip)
+- **Video Tutorials**:
+  - Daniel Paul Martin ("Dr. TRSDOS" on YouTube) provides walkthroughs explaining the TRS-OS architecture, ZDS II compilation, and running TRSDOS 6.3.1 on eZ80 hardware.
 
 ---
 
@@ -218,7 +242,7 @@ TRS-OS includes network client capabilities via eZ80 **UART1** to interface with
 ## Technical Credits & References
 
 - **TRSDOS 6.3.1 / LS-DOS 6.3**: Originally developed by Logical Systems, Inc. and Misosys (Roy Soltoff, Dick Miller). See [Tim Mann's Misosys & LS-DOS Archive](https://www.tim-mann.org/misosys.html) and [Wikipedia: TRSDOS](https://en.wikipedia.org/wiki/TRSDOS).
-- **TRS-OS Port for eZ80**: Ported and adapted for eZ80 by Daniel Paul Martin ([danielpaulmartin.com](https://danielpaulmartin.com/how%20do%20i%20get/)).
+- **TRS-OS Port for eZ80**: Ported and adapted for eZ80 by Daniel Paul Martin ([danielpaulmartin.com](https://danielpaulmartin.com/how%20do%20i%20get/)). Full upstream source code is available in [TRSDOS_7.zip](https://danielpaulmartin.com/sitepad-data/uploads/TRSDOS_7.zip) and binary system images in [TRS-NET.zip](https://danielpaulmartin.com/sitepad-data/uploads/TRS-NET.zip) via his [Downloads page](https://danielpaulmartin.com/home/my-downloads/).
 - **Agon Light Hardware Platform**: Designed by Bernardo Kastrup ([The Byte Attic](https://www.thebyteattic.com/p/agon.html)) and manufactured as the AgonLight2 by Olimex ([OLIMEX AgonLight2 GitHub](https://github.com/OLIMEX/AgonLight2)).
 - **Quark MOS & VDP**: Developed by Dean Belfield and the [Agon Platform](https://github.com/AgonPlatform) community ([Agon Platform Documentation](https://agonplatform.github.io/agon-docs/), [agon-mos](https://github.com/AgonPlatform/agon-mos), and [agon-vdp](https://github.com/AgonPlatform/agon-vdp)).
 - **fab-agon-emulator**: Developed by Tom Nairn ([fab-agon-emulator GitHub](https://github.com/tomm/fab-agon-emulator)).
