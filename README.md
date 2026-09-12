@@ -217,8 +217,8 @@ TRS-OS includes network client capabilities via eZ80 **UART1** to interface with
 
 ## Technical Credits & References
 
-- **TRSDOS 6.3.1 / LS-DOS 6.3**: Originally developed by Logical Systems, Inc. and Misosys (Roy Soltoff, Dick Miller).
-- **TRS-OS Port for eZ80**: Ported and adapted by Daniel Paul Martin ([danielpaulmartin.com](https://danielpaulmartin.com/how%20do%20i%20get/)).
-- **Agon Light Hardware Platform**: Created by Bernardo Kastrup (The Byte Attic) and Olimex.
-- **Quark MOS & VDP**: Developed by Dean Belfield and the Agon Platform community ([agonplatform.github.io](https://agonplatform.github.io/agon-docs/)).
-- **fab-agon-emulator**: Developed by Tom Nairn.
+- **TRSDOS 6.3.1 / LS-DOS 6.3**: Originally developed by Logical Systems, Inc. and Misosys (Roy Soltoff, Dick Miller). See [Tim Mann's Misosys & LS-DOS Archive](https://www.tim-mann.org/misosys.html) and [Wikipedia: TRSDOS](https://en.wikipedia.org/wiki/TRSDOS).
+- **TRS-OS Port for eZ80**: Ported and adapted for eZ80 by Daniel Paul Martin ([danielpaulmartin.com](https://danielpaulmartin.com/how%20do%20i%20get/)).
+- **Agon Light Hardware Platform**: Designed by Bernardo Kastrup ([The Byte Attic](https://www.thebyteattic.com/p/agon.html)) and manufactured as the AgonLight2 by Olimex ([OLIMEX AgonLight2 GitHub](https://github.com/OLIMEX/AgonLight2)).
+- **Quark MOS & VDP**: Developed by Dean Belfield and the Agon Platform community ([Agon Platform Documentation](https://agonplatform.github.io/agon-docs/), [agon-mos](https://github.com/breakintoprogram/agon-mos), and [agon-vdp](https://github.com/breakintoprogram/agon-vdp)).
+- **fab-agon-emulator**: Developed by Tom Nairn ([fab-agon-emulator GitHub](https://github.com/tomm/fab-agon-emulator)).
