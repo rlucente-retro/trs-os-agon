@@ -10,6 +10,17 @@ This repository provides the bare-metal loader source code and build automation 
 - **MOS (No)**: TRS-OS is a bare-metal operating system that replaces Quark MOS. MOS is used only as a transient first-stage loader to read files into external SRAM. Once execution transitions to TRS-OS, MOS is completely replaced in memory.
 - **VDP (Yes, as an ANSI Terminal)**: TRS-OS communicates with the ESP32 VDP over UART0 at **115,200 baud (8-N-1)**, using standard ASCII and VT100/ANSI terminal escape sequences for display and keyboard input.
 
+### Memory Architecture & SRAM Partitioning
+
+The Olimex Agon Light 2 features **512 KB** of external parallel SRAM (`AS6C4008`) and **8 KB** of on-chip eZ80 SRAM. During the hardware handover, the external SRAM is remapped via Chip Select 0 (`CS0`) from MOS's default range (`0x040000`–`0x0BFFFF`) down to base address zero (`0x000000`–`0x07FFFF`):
+
+| Physical Address Range | Size | Allocation / Role |
+|---|---|---|
+| `0x000000`–`0x00FFFF` | 64 KB | **Z80 Execution Space (`ADL=0`)**: TRSDOS 6.3.1 operating system kernel, system tables, driver jump vectors, IVT (`0x00F600`), and user workspace. |
+| `0x010000`–`0x077FFF` | 416 KB | **RAM Disk Area (Volume 0)**: Extended SRAM slices containing the boot RAM disk formatted as a **360 KB** Misosys DiskDISK volume (40 tracks × 2 sides × 18 sectors × 256 bytes = 368,640 bytes). Slices 0 & 1 metadata reside at `0x010000`–`0x0101FF`, DiskDISK header at `0x010200`, and sector data at `0x010300`–`0x06A2FF`. |
+| `0x078000`–`0x07FFFF` | 32 KB | **Unallocated External SRAM**: Top of 512 KB physical SRAM (where `boottrs.bin` was loaded under MOS at `&B8000` prior to remapping). |
+| `0xFFE000`–`0xFFFFFF` | 8 KB | **eZ80F92 On-Chip SRAM**: Transient trampoline buffer and stack used during hardware handover to safely reconfigure CS0 and peripheral registers. |
+
 ### Hardware Handover Sequence
 1. **Load Phase**: MOS loads `trsos.dat` (480 KB) into external SRAM at `&40000` (`0x040000`–`0x0B7FFF`), then loads `boottrs.bin` (154 bytes) at `&B8000`.
 2. **Launch**: Execution begins at `&B8000` in 24-bit linear addressing mode (`ADL=1`).
@@ -96,6 +107,11 @@ Place the following three files in the root directory of a FAT32-formatted micro
    TRSDOS Ready
    ```
 3. Standard TRSDOS commands are available: `DIR`, `FREE`, `HELP`, `MEMDIR`, `DEVICE`, `PURGE`.
+
+### Storage & Persistence (SD Card vs. RAM Disk vs. TRS-NET)
+- **No MicroSD Card Access at Runtime**: TRS-OS runs bare-metal in 16-bit Z80 compatibility mode (`ADL=0`), completely replacing Quark MOS in memory. Because MOS and its SPI FatFS drivers are unloaded, TRS-OS cannot read from or write to the microSD card once running.
+- **Volatile RAM Disk (Drive `:0`)**: Volume 0 is loaded into external SRAM during boot. Files can be created, modified, and executed on Drive `:0` while running, but **all changes are volatile and will be lost when the Agon Light is powered off or reset**.
+- **Persistent Storage via TRS-NET (Drive `:6`)**: To save files persistently across sessions, connect the eZ80 UART1 serial pins to a host computer running `TRS-NET.py`. Mounting Drive `:6` allows transferring files (`BACKUP`, `COPY`) to and from virtual floppy disk images (`.dsk`, such as 720 KB images) stored on the host PC.
 
 ---
 
