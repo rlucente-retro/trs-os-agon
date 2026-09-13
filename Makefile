@@ -12,6 +12,7 @@ SRC_DIR      := src
 SRC          := $(SRC_DIR)/boottrs.asm
 INCLUDES     := $(SRC_DIR)/ez80f92.inc
 AUTOEXEC     := $(SRC_DIR)/autoexec.txt
+FONT         := $(SRC_DIR)/TRS80M4pG.F10
 TARGET       := boottrs.bin
 LISTING      := $(SRC_DIR)/boottrs.lst
 SYMBOLS      := $(SRC_DIR)/boottrs.symbols
@@ -59,7 +60,8 @@ install: $(TARGET) $(SYSTEM_IMAGE)
 	@mkdir -p $(SDCARD)
 	cp $(TARGET) $(SYSTEM_IMAGE) $(SDCARD)/
 	cp $(AUTOEXEC) $(SDCARD)/autoexec.txt
-	@echo "Deployed $(TARGET), $(SYSTEM_IMAGE), and autoexec.txt to $(SDCARD)/"
+	cp $(FONT) $(SDCARD)/
+	@echo "Deployed $(TARGET), $(SYSTEM_IMAGE), autoexec.txt, and $(notdir $(FONT)) to $(SDCARD)/"
 
 clean:
 	rm -f $(TARGET) $(LISTING) $(SYMBOLS)

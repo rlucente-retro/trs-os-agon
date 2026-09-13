@@ -48,7 +48,8 @@ This repository contains **only source code and build automation**:
 └── src/
     ├── boottrs.asm      # eZ80 assembly source for the MOS handover loader
     ├── ez80f92.inc      # Canonical eZ80F92 peripheral register equates
-    └── autoexec.txt     # Optional MOS auto-boot batch script
+    ├── autoexec.txt     # Optional MOS auto-boot batch script
+    └── TRS80M4pG.F10    # Authentic 8x10 TRS-80 Model 4 font bitmap
 ```
 
 ---
@@ -86,10 +87,11 @@ You can also assemble directly on Agon hardware under MOS using `ez80asm.bin`:
 ## Running TRS-OS
 
 ### MicroSD Card Setup
-Place the following three files in the root directory of a FAT32-formatted microSD card (or your emulator's `sdcard` folder):
-- `boottrs.bin` — Generated loader binary (154 bytes)
+Place the following files in the root directory of a FAT32-formatted microSD card (or your emulator's `sdcard` folder):
+- `boottrs.bin` — Generated loader binary (197 bytes)
 - `trsos.dat` — TRS-OS system and RAM disk image (480 KB)
 - `autoexec.txt` — MOS auto-boot script
+- `TRS80M4pG.F10` — Authentic 8×10 TRS-80 font bitmap (loaded into VDP font slot 1)
 
 ### Booting
 - **Automatic**: Power on the Agon Light with the microSD card inserted. MOS automatically executes `autoexec.txt`.

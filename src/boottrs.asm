@@ -5,18 +5,21 @@
 ; Target Address  : &0B8000 (loaded into external SRAM by Quark MOS)
 ; Initial CPU Mode: ADL=1 (24-bit linear addressing)
 ; Final CPU Mode  : ADL=0, MADL=0 (16-bit Z80 compatibility mode at 0x000000)
-; Output Binary   : boottrs.bin (154 bytes)
+; Output Binary   : boottrs.bin (197 bytes)
 ;
 ; Assembles using ez80asm (the canonical Agon assembler):
 ;   ez80asm src/boottrs.asm boottrs.bin
 ;
 ; How It Works:
-; 1. Quark MOS loads trsos.dat (480 KB) to external SRAM at &40000.
-; 2. Quark MOS loads boottrs.bin to external SRAM at &B8000.
-; 3. User (or autoexec.txt) executes: JMP &B8000
-; 4. The launcher header enables on-chip 8 KB SRAM at 0xFFE000 and sets SP to 0xFFFFFF.
-; 5. It copies the relocation stub to on-chip SRAM (0xFFE000) and jumps to it.
-; 6. Running safely from on-chip SRAM (so external SRAM can be unmapped):
+; 1. Quark MOS runs autoexec.txt:
+;    a. loadfont 1 TRS80M4pG.F10 (loads 8x10 TRS-80 font into VDP font slot 1)
+;    b. LOAD trsos.dat &40000 (loads 480 KB OS + RAM disk into external SRAM)
+;    c. LOAD boottrs.bin &B8000
+;    d. JMP &B8000
+; 2. The launcher sends VDP terminal mode and font activation sequence (\x1b_#F1$) to UART0.
+; 3. The launcher enables on-chip 8 KB SRAM at 0xFFE000 and sets SP to 0xFFFFFF.
+; 4. It copies the relocation stub to on-chip SRAM (0xFFE000) and jumps to it.
+; 5. Running safely from on-chip SRAM (so external SRAM can be unmapped):
 ;    a. Disables eZ80 timers (TMR0-TMR5) and clears pending interrupt flags.
 ;    b. Disables UART0 and UART1 interrupts.
 ;    c. Disables GPIO interrupts (PB_ALT1, PC_ALT1, PD_ALT1).
@@ -55,6 +58,18 @@ STRAY_HANDLER:  EQU $00F786         ; Address of STRAY.handler in TRS-OS
 ; ==============================================================================
 
 launcher:
+    ; Send VDP terminal configuration and TRS-80 8x10 font activation sequence
+    LD HL, vdp_init_seq
+    LD B, vdp_init_len
+send_vdp:
+    IN0 A, (UART0_LSR)
+    AND $20                         ; Wait for Transmitter Holding Register Empty (THRE)
+    JR Z, send_vdp
+    LD A, (HL)
+    OUT0 (UART0_THR), A
+    INC HL
+    DJNZ send_vdp
+
     ; Enable eZ80 on-chip 8 KB SRAM at 0xFFE000
     LD A, $80
     OUT0 (RAM_CTL), A
@@ -72,6 +87,15 @@ launcher:
 
     ; Jump into relocation stub running in on-chip SRAM
     JP INTERNAL_SRAM
+
+vdp_init_seq:
+    DB 22, 4                        ; VDU 22, 4: Set Mode 4 (640x480 60Hz 16 colors)
+    DB 23, 0, $FF                   ; VDU 23, 0, &FF: Switch VDP into Terminal Mode
+    DB $1B, "_#F1$"                 ; ESC _ # F 1 $: Select Font 1 in Terminal Mode
+    DB $1B, "[1;24r"                ; ESC [ 1 ; 2 4 r: Set terminal scrolling region to 24 lines
+    DB $1B, "_k", 8, "$"            ; ESC _ k \x08 $: Configure backspace mode
+vdp_init_len: EQU $ - vdp_init_seq
+
 
 ; ==============================================================================
 ; Stage 2: Relocation Stub
