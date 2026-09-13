@@ -1,5 +1,6 @@
-# TRS-OS on the Agon Light Platform
-
+> [!NOTE]
+> Use [Sijnstra's OSboot utility](https://github.com/sijnstra/agon-projects/tree/main/OSboot#) instead. This repository is deprecated.
+ 
 This repository provides the bare-metal loader source code and build automation for running Daniel Paul Martin's **TRS-OS** (a port of **TRSDOS 6.3.1 / LS-DOS 6.3** to the Zilog eZ80) on the **Olimex Agon Light 2** and compatible Agon family hardware, as well as on software emulators such as `fab-agon-emulator`.
 
 ---
